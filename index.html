@@ -12,6 +12,37 @@
     .noun { background-color: #EBC8A8; }
     .adjective { background-color: #AED9E0; }
     .other { background-color: #D4A5A5; }
+    
+    #info-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .legend {
+      display: flex;
+      flex-direction: column;
+      margin-top: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+    
   </style>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center h-screen">
@@ -22,16 +53,41 @@
   </div>
 
   <button id="button-container" class="fixed bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full focus:outline-none">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
     </svg>
   </button>
 
-  <button id="reveal-button" class="fixed bottom-4 left-4 bg-green-500 text-white p-3 rounded-full focus:outline-none">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-    </svg>
-  </button>
+  <button id="info-button" class="fixed top-4 left-4 bg-gray-500 text-white p-3 rounded-full focus:outline-none">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
+    <circle cx="12" cy="12" r="9" stroke-width="2" fill="transparent"></circle>
+    <text x="50%" y="50%" font-size="8" text-anchor="middle" dy=".3em" fill="#fff">i</text>
+  </svg>
+</button>
+  
+  <button id="reveal-button" class="fixed bottom-4 right-20 bg-green-500 text-white p-3 rounded-full focus:outline-none">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
+    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" stroke-width="2"></rect>
+  </svg>
+</button>
+  
+  <div id="info-modal">
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color verb"></div>
+        <span>Verb</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color noun"></div>
+        <span>Nom</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color adjective"></div>
+        <span>Adjectiu</span>
+      </div>
+      
+    </div>
+  </div>
 
   <script>
     const flashcard = document.getElementById('flashcard');
@@ -39,6 +95,8 @@
     const translationElement = document.getElementById('translation');
     const button = document.getElementById('button-container');
     const revealButton = document.getElementById('reveal-button');
+    const infoButton = document.getElementById('info-button');
+    const infoModal = document.getElementById('info-modal');
 
     // Array de paraules alemanyes i les seves traduccions amb el tipus de paraula
     let words = [
@@ -335,7 +393,27 @@
       currentWordIndex = (currentWordIndex + 1) % words.length;
       updateFlashcard();
     });
+    
+    // Funció per mostrar o amagar la finestra modal
+    function toggleInfoModal() {
+        if (infoModal.style.display === 'block') {
+            infoModal.style.display = 'none';
+        } else {
+            infoModal.style.display = 'block';
+        }
+    }
 
+    // Afegeix un event listener al botó per mostrar o amagar la finestra modal
+    infoButton.addEventListener('click', toggleInfoModal);
+
+    // Afegeix un event listener al document per amagar la finestra modal quan es fa clic fora d'ella
+    document.addEventListener('click', function(event) {
+        if (infoModal.style.display === 'block' && !infoModal.contains(event.target) && event.target !== infoButton) {
+            infoModal.style.display = 'none';
+        }
+    });
+    
+    
     // Inicialitzar la primera paraula
     updateFlashcard();
   </script>
