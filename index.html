@@ -412,6 +412,11 @@
             infoModal.style.display = 'none';
         }
     });
+
+    // Atura la propagació de l'event click quan es fa clic al botó
+    infoButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
     
     
     // Inicialitzar la primera paraula
