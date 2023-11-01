@@ -8,52 +8,304 @@
   <link rel="icon" type="image/png" href="round.png"/>
 
   <style>
-    /* Afegir estils personalitzats aquí si cal */
+    .verb { background-color: #81E6D9; }
+    .noun { background-color: #EBC8A8; }
+    .adjective { background-color: #AED9E0; }
+    .other { background-color: #D4A5A5; }
   </style>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center h-screen">
 
-  <div id="flashcard" class="bg-white p-12 rounded-lg shadow-md cursor-pointer text-center">
+  <div id="flashcard" class="p-8 rounded-lg shadow-md cursor-pointer text-center">
     <h1 id="word" class="text-3xl font-bold">Blumen</h1>
     <p id="translation" class="text-lg text-gray-700 hidden">Flors</p>
   </div>
 
-  <div id="arrow" class="mt-8 text-gray-500 cursor-pointer">
+  <button id="button-container" class="fixed bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full focus:outline-none">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
     </svg>
-  </div>
+  </button>
+
+  <button id="reveal-button" class="fixed bottom-4 left-4 bg-green-500 text-white p-3 rounded-full focus:outline-none">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+    </svg>
+  </button>
 
   <script>
     const flashcard = document.getElementById('flashcard');
     const wordElement = document.getElementById('word');
     const translationElement = document.getElementById('translation');
-    const arrow = document.getElementById('arrow');
+    const button = document.getElementById('button-container');
+    const revealButton = document.getElementById('reveal-button');
 
-    // Array de paraules alemanyes i les seves traduccions
-    const words = [
-      { word: 'Blumen', translation: 'Flors' },
-      { word: 'Haus', translation: 'Casa' },
-      { word: 'Auto', translation: 'Cotxe' },
-      { word: 'Apfel', translation: 'Poma' },
-      { word: 'Tisch', translation: 'Taula' },
-      { word: 'Stuhl', translation: 'Cadires' },
-      { word: 'Himmel', translation: 'Cel' },
-      { word: 'Wasser', translation: 'Aigua' },
-      { word: 'Sonne', translation: 'Sol' },
-      { word: 'Mond', translation: 'Lluna' },
-      { word: 'Hund', translation: 'Gos' },
-      { word: 'Katze', translation: 'Gat' },
-      { word: 'Baum', translation: 'Arbre' },
-      { word: 'Schule', translation: 'Escola' },
-      { word: 'Buch', translation: 'Llibre' },
-      { word: 'Fenster', translation: 'Finestra' },
-      { word: 'Tür', translation: 'Porta' },
-      { word: 'Wald', translation: 'Bosc' },
-      { word: 'Mädchen', translation: 'Noia' },
-      { word: 'Junge', translation: 'Noi' },
-      { word: 'Eltern', translation: 'Pares' },
+    // Array de paraules alemanyes i les seves traduccions amb el tipus de paraula
+    let words = [
+        { word: 'Hund', translation: 'Gos', type: 'noun' },
+  { word: 'Katze', translation: 'Gat', type: 'noun' },
+  { word: 'Haus', translation: 'Casa', type: 'noun' },
+  { word: 'Auto', translation: 'Cotxe', type: 'noun' },
+  { word: 'Tisch', translation: 'Taula', type: 'noun' },
+  { word: 'Stuhl', translation: 'Cadires', type: 'noun' },
+  { word: 'Himmel', translation: 'Cel', type: 'noun' },
+  { word: 'Wasser', translation: 'Aigua', type: 'noun' },
+  { word: 'Sonne', translation: 'Sol', type: 'noun' },
+  { word: 'Mond', translation: 'Lluna', type: 'noun' },
+  { word: 'Apfel', translation: 'Poma', type: 'noun' },
+  { word: 'Baum', translation: 'Arbre', type: 'noun' },
+  { word: 'Fenster', translation: 'Finestra', type: 'noun' },
+  { word: 'Tür', translation: 'Porta', type: 'noun' },
+  { word: 'Wald', translation: 'Bosc', type: 'noun' },
+  { word: 'Mädchen', translation: 'Noia', type: 'noun' },
+  { word: 'Junge', translation: 'Noi', type: 'noun' },
+  { word: 'Eltern', translation: 'Pares', type: 'noun' },
+  { word: 'Laufen', translation: 'Correr', type: 'verb' },
+  { word: 'Spielen', translation: 'Jugar', type: 'verb' },
+  { word: 'Lesen', translation: 'Llegir', type: 'verb' },
+  { word: 'Groß', translation: 'Gran', type: 'adjective' },
+  { word: 'Klein', translation: 'Petit', type: 'adjective' },
+  { word: 'Schön', translation: 'Bonic', type: 'adjective' },
+  { word: 'Schnell', translation: 'Ràpid', type: 'adjective' },
+  { word: 'Rot', translation: 'Vermell', type: 'adjective' },
+  { word: 'Hören', translation: 'Escoltar', type: 'verb' },
+  { word: 'Sehen', translation: 'Veure', type: 'verb' },
+  { word: 'Sprechen', translation: 'Parlar', type: 'verb' },
+  { word: 'Morgen', translation: 'Matí', type: 'noun' },
+  { word: 'Nacht', translation: 'Nit', type: 'noun' },
+  { word: 'Frühling', translation: 'Primavera', type: 'noun' },
+  { word: 'Sommer', translation: 'Estiu', type: 'noun' },
+  { word: 'Herbst', translation: 'Tardor', type: 'noun' },
+  { word: 'Winter', translation: 'Hivern', type: 'noun' },
+  { word: 'Geburtstag', translation: 'Aniversari', type: 'noun' },
+  { word: 'Freund', translation: 'Amic', type: 'noun' },
+  { word: 'Freundin', translation: 'Amiga', type: 'noun' },
+  { word: 'Liebe', translation: 'Amor', type: 'noun' },
+  { word: 'Arbeit', translation: 'Treball', type: 'noun' },
+  { word: 'Essen', translation: 'Menjar', type: 'verb' },
+  { word: 'Trinken', translation: 'Beure', type: 'verb' },
+  { word: 'Schlafen', translation: 'Dormir', type: 'verb' },
+  { word: 'Hausaufgaben', translation: 'Deures', type: 'noun' },
+  { word: 'Maus', translation: 'Ratolí', type: 'noun' },
+  { word: 'Hemd', translation: 'Camisa', type: 'noun' },
+  { word: 'Schuhe', translation: 'Sabates', type: 'noun' },
+  { word: 'Tasche', translation: 'Bosseta', type: 'noun' },
+  { word: 'Uhr', translation: 'Rellotge', type: 'noun' },
+  { word: 'Telefon', translation: 'Telèfon', type: 'noun' },
+  { word: 'Fenster', translation: 'Finestra', type: 'noun' },
+  { word: 'Computer', translation: 'Ordinador', type: 'noun' },
+  { word: 'Gesicht', translation: 'Cara', type: 'noun' },
+  { word: 'Hand', translation: 'Mà', type: 'noun' },
+  { word: 'Fuß', translation: 'Peu', type: 'noun' },
+  { word: 'Kopf', translation: 'Cap', type: 'noun' },
+  { word: 'Auge', translation: 'Ull', type: 'noun' },
+  { word: 'Ohren', translation: 'Orelles', type: 'noun' },
+  { word: 'Nase', translation: 'Nas', type: 'noun' },
+  { word: 'Mund', translation: 'Boca', type: 'noun' },
+  { word: 'Zähne', translation: 'Dents', type: 'noun' },
+  { word: 'Haare', translation: 'Cabells', type: 'noun' },
+  { word: 'Schule', translation: 'Escola', type: 'noun' },
+  { word: 'Lehrer', translation: 'Professor', type: 'noun' },
+  { word: 'Schüler', translation: 'Estudiant', type: 'noun' },
+  { word: 'Klasse', translation: 'Classe', type: 'noun' },
+  { word: 'Buch', translation: 'Llibre', type: 'noun' },
+  { word: 'Stift', translation: 'Llapis', type: 'noun' },
+  { word: 'Papier', translation: 'Paper', type: 'noun' },
+  { word: 'Schreiben', translation: 'Escriure', type: 'verb' },
+  { word: 'Lesen', translation: 'Llegir', type: 'verb' },
+  { word: 'Rechnen', translation: 'Calcular', type: 'verb' },
+  { word: 'Malen', translation: 'Pintar', type: 'verb' },
+  { word: 'Tanzen', translation: 'Ballar', type: 'verb' },
+  { word: 'Singt', translation: 'Cantar', type: 'verb' },
+  { word: 'Lachen', translation: 'Riure', type: 'verb' },
+  { word: 'Weinen', translation: 'Plorar', type: 'verb' },
+  { word: 'Sport', translation: 'Esport', type: 'noun' },
+  { word: 'Fußball', translation: 'Futbol', type: 'noun' },
+  { word: 'Tennis', translation: 'Tennis', type: 'noun' },
+  { word: 'Schwimmen', translation: 'Nedar', type: 'verb' },
+  { word: 'Fahrrad', translation: 'Bicicleta', type: 'noun' },
+  { word: 'Spazieren', translation: 'Anar de passeig', type: 'verb' },
+  { word: 'Kochen', translation: 'Cuinar', type: 'verb' },
+  { word: 'Backen', translation: 'Fer pa', type: 'verb' },
+  { word: 'Blume', translation: 'Flor', type: 'noun' },
+  { word: 'Berg', translation: 'Muntanya', type: 'noun' },
+  { word: 'Wolke', translation: 'Núvol', type: 'noun' },
+  { word: 'See', translation: 'Llac', type: 'noun' },
+  { word: 'Meer', translation: 'Mar', type: 'noun' },
+  { word: 'Insel', translation: 'Illa', type: 'noun' },
+  { word: 'Stadt', translation: 'Ciutat', type: 'noun' },
+  { word: 'Land', translation: 'País', type: 'noun' },
+  { word: 'Fluss', translation: 'Riu', type: 'noun' },
+  { word: 'Brücke', translation: 'Pont', type: 'noun' },
+  { word: 'Schiff', translation: 'Vaixell', type: 'noun' },
+  { word: 'Flugzeug', translation: 'Avió', type: 'noun' },
+  { word: 'Zug', translation: 'Tren', type: 'noun' },
+  { word: 'Auto', translation: 'Cotxe', type: 'noun' },
+  { word: 'Fahrrad', translation: 'Bicicleta', type: 'noun' },
+  { word: 'Motorrad', translation: 'Motocicleta', type: 'noun' },
+  { word: 'Hut', translation: 'Barret', type: 'noun' },
+  { word: 'Handy', translation: 'Mòbil', type: 'noun' },
+  { word: 'Kamera', translation: 'Càmera', type: 'noun' },
+  { word: 'Musik', translation: 'Música', type: 'noun' },
+  { word: 'Film', translation: 'Pel·lícula', type: 'noun' },
+  { word: 'Buch', translation: 'Llibre', type: 'noun' },
+  { word: 'Zeitung', translation: 'Diari', type: 'noun' },
+  { word: 'Brief', translation: 'Carta', type: 'noun' },
+  { word: 'E-Mail', translation: 'Correu electrònic', type: 'noun' },
+  { word: 'Schlüssel', translation: 'Clau', type: 'noun' },
+  { word: 'Geld', translation: 'Diners', type: 'noun' },
+  { word: 'Karte', translation: 'Targeta', type: 'noun' },
+  { word: 'Geschenk', translation: 'Regal', type: 'noun' },
+  { word: 'Lächeln', translation: 'Somriure', type: 'verb' },
+  { word: 'Traurig', translation: 'Trist', type: 'adjective' },
+  { word: 'Glücklich', translation: 'Feliç', type: 'adjective' },
+  { word: 'Müde', translation: 'Cansat', type: 'adjective' },
+  { word: 'Gesund', translation: 'Sa', type: 'adjective' },
+  { word: 'Krank', translation: 'Malalt', type: 'adjective' },
+  { word: 'Alt', translation: 'Vell', type: 'adjective' },
+  { word: 'Jung', translation: 'Jove', type: 'adjective' },
+  { word: 'Dunkel', translation: 'Fosc', type: 'adjective' },
+  { word: 'Hell', translation: 'Clar', type: 'adjective' },
+  { word: 'Heiß', translation: 'Calent', type: 'adjective' },
+  { word: 'Kalt', translation: 'Fred', type: 'adjective' },
+  { word: 'Scharf', translation: 'Picant', type: 'adjective' },
+  { word: 'Sanft', translation: 'Suau', type: 'adjective' },
+  { word: 'Stark', translation: 'Fort', type: 'adjective' },
+  { word: 'Schwach', translation: 'Dèbil', type: 'adjective' },
+  { word: 'Laut', translation: 'Fort', type: 'adjective' },
+  { word: 'Leise', translation: 'Silenciós', type: 'adjective' },
+  { word: 'Schnell', translation: 'Ràpid', type: 'adjective' },
+  { word: 'Langsam', translation: 'Lent', type: 'adjective' },
+  { word: 'Fröhlich', translation: 'Alegre', type: 'adjective' },
+  { word: 'Traurig', translation: 'Trist', type: 'adjective' },
+  { word: 'Stolz', translation: 'Orgullós', type: 'adjective' },
+  { word: 'Schüchtern', translation: 'Tímid', type: 'adjective' },
+  { word: 'Mutig', translation: 'Valent', type: 'adjective' },
+  { word: 'Lampe', translation: 'Llum', type: 'noun' },
+  { word: 'Weg', translation: 'Camí', type: 'noun' },
+  { word: 'Stuhl', translation: 'Cadira', type: 'noun' },
+  { word: 'Hose', translation: 'Pantalons', type: 'noun' },
+  { word: 'Hut', translation: 'Barret', type: 'noun' },
+  { word: 'Kühlschrank', translation: 'Nevera', type: 'noun' },
+  { word: 'Uhr', translation: 'Rellotge', type: 'noun' },
+  { word: 'Schlüssel', translation: 'Clau', type: 'noun' },
+  { word: 'Fenster', translation: 'Finestra', type: 'noun' },
+  { word: 'Stift', translation: 'Llapis', type: 'noun' },
+  { word: 'Teller', translation: 'Plat', type: 'noun' },
+  { word: 'Gabel', translation: 'Forquilla', type: 'noun' },
+  { word: 'Messer', translation: 'Cotell', type: 'noun' },
+  { word: 'Löffel', translation: 'Cullera', type: 'noun' },
+  { word: 'Kissen', translation: 'Coixí', type: 'noun' },
+  { word: 'Teppich', translation: 'Catifa', type: 'noun' },
+  { word: 'Himmel', translation: 'Cel', type: 'noun' },
+  { word: 'Stern', translation: 'Estrella', type: 'noun' },
+  { word: 'Mond', translation: 'Lluna', type: 'noun' },
+  { word: 'Wolke', translation: 'Núvol', type: 'noun' },
+  { word: 'Wind', translation: 'Vent', type: 'noun' },
+  { word: 'Regen', translation: 'Pluja', type: 'noun' },
+  { word: 'Schnee', translation: 'Neu', type: 'noun' },
+  { word: 'Blume', translation: 'Flor', type: 'noun' },
+  { word: 'Baum', translation: 'Arbre', type: 'noun' },
+  { word: 'Gras', translation: 'Herba', type: 'noun' },
+  { word: 'Erde', translation: 'Terra', type: 'noun' },
+  { word: 'Berg', translation: 'Muntanya', type: 'noun' },
+  { word: 'Fluss', translation: 'Riu', type: 'noun' },
+  { word: 'See', translation: 'Llac', type: 'noun' },
+  { word: 'Meer', translation: 'Mar', type: 'noun' },
+  { word: 'Strand', translation: 'Platja', type: 'noun' },
+  { word: 'Insel', translation: 'Illa', type: 'noun' },
+  { word: 'Haus', translation: 'Casa', type: 'noun' },
+  { word: 'Wohnung', translation: 'Apartament', type: 'noun' },
+  { word: 'Zimmer', translation: 'Habitació', type: 'noun' },
+  { word: 'Küche', translation: 'Cuina', type: 'noun' },
+  { word: 'Bad', translation: 'Bany', type: 'noun' },
+  { word: 'Schlafzimmer', translation: 'Dormitori', type: 'noun' },
+  { word: 'Wohnzimmer', translation: 'Sala d\'estar', type: 'noun' },
+  { word: 'Esszimmer', translation: 'Menjador', type: 'noun' },
+  { word: 'Toilette', translation: 'WC', type: 'noun' },
+  { word: 'Flur', translation: 'Passadís', type: 'noun' },
+  { word: 'Treppe', translation: 'Escales', type: 'noun' },
+  { word: 'Dach', translation: 'Teulada', type: 'noun' },
+  { word: 'Boden', translation: 'Sòl', type: 'noun' },
+  { word: 'Fenster', translation: 'Finestra', type: 'noun' },
+  { word: 'Tür', translation: 'Porta', type: 'noun' },
+  { word: 'Schlüssel', translation: 'Clau', type: 'noun' },
+  { word: 'Licht', translation: 'Llum', type: 'noun' },
+  { word: 'Schatten', translation: 'Ombra', type: 'noun' },
+  { word: 'Spiegel', translation: 'Mirall', type: 'noun' },
+  { word: 'Bild', translation: 'Quadre', type: 'noun' },
+  { word: 'Regal', translation: 'Llibreria', type: 'noun' },
+  { word: 'Tisch', translation: 'Taula', type: 'noun' },
+  { word: 'Stuhl', translation: 'Cadira', type: 'noun' },
+  { word: 'Sofa', translation: 'Sofà', type: 'noun' },
+  { word: 'Bett', translation: 'Llit', type: 'noun' },
+  { word: 'Schrank', translation: 'Armari', type: 'noun' },
+  { word: 'Kleiderschrank', translation: 'Armari d\'abrics', type: 'noun' },
+  { word: 'Schublade', translation: 'Calaix', type: 'noun' },
+  { word: 'Tasse', translation: 'Tassa', type: 'noun' },
+  { word: 'Teller', translation: 'Plat', type: 'noun' },
+  { word: 'Glas', translation: 'Vas', type: 'noun' },
+  { word: 'Becher', translation: 'Got', type: 'noun' },
+  { word: 'Besteck', translation: 'Cubertilleria', type: 'noun' },
+  { word: 'Gabel', translation: 'Forquilla', type: 'noun' },
+  { word: 'Messer', translation: 'Cotell', type: 'noun' },
+  { word: 'Löffel', translation: 'Cullera', type: 'noun' },
+  { word: 'Topf', translation: 'Olla', type: 'noun' },
+  { word: 'Pfanne', translation: 'Paella', type: 'noun' },
+  { word: 'Ofen', translation: 'Forn', type: 'noun' },
+  { word: 'Kühlschrank', translation: 'Nevera', type: 'noun' },
+  { word: 'Gefrierschrank', translation: 'Congelador', type: 'noun' },
+  { word: 'Mikrowelle', translation: 'Microones', type: 'noun' },
+  { word: 'Waschmaschine', translation: 'Rentadora', type: 'noun' },
+  { word: 'Geschirrspüler', translation: 'Rentaplats', type: 'noun' },
+  { word: 'Kissen', translation: 'Coixí', type: 'noun' },
+  { word: 'Bettdecke', translation: 'Edredó', type: 'noun' },
+  { word: 'Kleidung', translation: 'Ropa', type: 'noun' },
+  { word: 'Kleid', translation: 'Vestit', type: 'noun' },
+  { word: 'Hemd', translation: 'Camisa', type: 'noun' },
+  { word: 'Bluse', translation: 'Blusa', type: 'noun' },
+  { word: 'Hose', translation: 'Pantalons', type: 'noun' },
+  { word: 'Rock', translation: 'Faldilla', type: 'noun' },
+  { word: 'Jacke', translation: 'Jaqueta', type: 'noun' },
+  { word: 'Schuhe', translation: 'Sabates', type: 'noun' },
+  { word: 'Socken', translation: 'Mitjons', type: 'noun' },
+  { word: 'Mütze', translation: 'Gorra', type: 'noun' },
+  { word: 'Handschuhe', translation: 'Guants', type: 'noun' },
+  { word: 'Schal', translation: 'Bufanda', type: 'noun' },
+  { word: 'Tasche', translation: 'Bossa', type: 'noun' },
+  { word: 'Rucksack', translation: 'Motxilla', type: 'noun' },
+  { word: 'Geldbörse', translation: 'Cartera', type: 'noun' },
+  { word: 'Schlüssel', translation: 'Clau', type: 'noun' },
+  { word: 'Handy', translation: 'Mòbil', type: 'noun' },
+  { word: 'Laptop', translation: 'Portàtil', type: 'noun' },
+  { word: 'Kamera', translation: 'Càmera', type: 'noun' },
+  { word: 'Buch', translation: 'Llibre', type: 'noun' },
+  { word: 'Zeitung', translation: 'Diari', type: 'noun' },
+  { word: 'Magazin', translation: 'Revista', type: 'noun' },
+  { word: 'Brief', translation: 'Carta', type: 'noun' },
+  { word: 'Karte', translation: 'Targeta', type: 'noun' },
+  { word: 'Umschlag', translation: 'Sobre', type: 'noun' },
+  { word: 'Stift', translation: 'Llapis', type: 'noun' },
+  { word: 'Bleistift', translation: 'Llapis de grafit', type: 'noun' },
+  { word: 'Kugelschreiber', translation: 'Bolígraf', type: 'noun' },
+  { word: 'Marker', translation: 'Marcador', type: 'noun' },
+  { word: 'Radiergummi', translation: 'Goma d\'esborrar', type: 'noun' },
+  { word: 'Lineal', translation: 'Regle', type: 'noun' },
+  { word: 'Schere', translation: 'Tisores', type: 'noun' },
+  { word: 'Kleber', translation: 'Cola', type: 'noun' },
+  { word: 'Papier', translation: 'Paper', type: 'noun' },
+  { word: 'Notizbuch', translation: 'Quadern', type: 'noun' },
+  { word: 'Kalender', translation: 'Calendari', type: 'noun' },
+  { word: 'Computer', translation: 'Ordinador', type: 'noun' },
+  { word: 'Bildschirm', translation: 'Pantalla', type: 'noun' },
+  { word: 'Tastatur', translation: 'Teclat', type: 'noun' },
+  { word: 'Maus', translation: 'Ratolí', type: 'noun' },
+  { word: 'Lautsprecher', translation: 'Altaveus', type: 'noun' },
+  { word: 'Kopfhörer', translation: 'Auriculars', type: 'noun' },
     ];
+
+    // Barrejar l'array de paraules aleatòriament
+    words = words.sort(() => Math.random() - 0.5);
 
     let currentWordIndex = 0;
 
@@ -63,6 +315,9 @@
       wordElement.textContent = currentWord.word;
       translationElement.textContent = currentWord.translation;
       translationElement.classList.add('hidden'); // Amaguem la traducció inicialment
+
+      // Afegir classe de tipus de paraula per al color
+      flashcard.className = `p-8 rounded-lg shadow-md cursor-pointer text-center ${currentWord.type}`;
     }
 
     // Funció per canviar la paraula quan es fa clic a la flashcard
@@ -70,8 +325,13 @@
       translationElement.classList.remove('hidden'); // Mostrem la traducció al clicar
     });
 
-    // Funció per canviar la paraula quan es fa clic a la fletxa
-    arrow.addEventListener('click', () => {
+    // Funció per revelar la traducció quan es fa clic al botó de revelar
+    revealButton.addEventListener('click', () => {
+      translationElement.classList.remove('hidden'); // Mostrem la traducció
+    });
+
+    // Funció per canviar la paraula quan es fa clic al botó
+    button.addEventListener('click', () => {
       currentWordIndex = (currentWordIndex + 1) % words.length;
       updateFlashcard();
     });
