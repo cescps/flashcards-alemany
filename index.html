@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Deusch Flashcards</title>
+  <link rel="icon" type="image/png" href="round.png"/>
+
+  <style>
+    /* Afegir estils personalitzats aquí si cal */
+  </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center h-screen">
+
+  <div id="flashcard" class="bg-white p-12 rounded-lg shadow-md cursor-pointer text-center">
+    <h1 id="word" class="text-3xl font-bold">Blumen</h1>
+    <p id="translation" class="text-lg text-gray-700 hidden">Flors</p>
+  </div>
+
+  <div id="arrow" class="mt-8 text-gray-500 cursor-pointer">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </div>
+
+  <script>
+    const flashcard = document.getElementById('flashcard');
+    const wordElement = document.getElementById('word');
+    const translationElement = document.getElementById('translation');
+    const arrow = document.getElementById('arrow');
+
+    // Array de paraules alemanyes i les seves traduccions
+    const words = [
+      { word: 'Blumen', translation: 'Flors' },
+      { word: 'Haus', translation: 'Casa' },
+      { word: 'Auto', translation: 'Cotxe' },
+      { word: 'Apfel', translation: 'Poma' },
+      { word: 'Tisch', translation: 'Taula' },
+      { word: 'Stuhl', translation: 'Cadires' },
+      { word: 'Himmel', translation: 'Cel' },
+      { word: 'Wasser', translation: 'Aigua' },
+      { word: 'Sonne', translation: 'Sol' },
+      { word: 'Mond', translation: 'Lluna' },
+      { word: 'Hund', translation: 'Gos' },
+      { word: 'Katze', translation: 'Gat' },
+      { word: 'Baum', translation: 'Arbre' },
+      { word: 'Schule', translation: 'Escola' },
+      { word: 'Buch', translation: 'Llibre' },
+      { word: 'Fenster', translation: 'Finestra' },
+      { word: 'Tür', translation: 'Porta' },
+      { word: 'Wald', translation: 'Bosc' },
+      { word: 'Mädchen', translation: 'Noia' },
+      { word: 'Junge', translation: 'Noi' },
+      { word: 'Eltern', translation: 'Pares' },
+    ];
+
+    let currentWordIndex = 0;
+
+    // Funció per actualitzar la flashcard amb la paraula actual
+    function updateFlashcard() {
+      const currentWord = words[currentWordIndex];
+      wordElement.textContent = currentWord.word;
+      translationElement.textContent = currentWord.translation;
+      translationElement.classList.add('hidden'); // Amaguem la traducció inicialment
+    }
+
+    // Funció per canviar la paraula quan es fa clic a la flashcard
+    flashcard.addEventListener('click', () => {
+      translationElement.classList.remove('hidden'); // Mostrem la traducció al clicar
+    });
+
+    // Funció per canviar la paraula quan es fa clic a la fletxa
+    arrow.addEventListener('click', () => {
+      currentWordIndex = (currentWordIndex + 1) % words.length;
+      updateFlashcard();
+    });
+
+    // Inicialitzar la primera paraula
+    updateFlashcard();
+  </script>
+
+</body>
+</html>
